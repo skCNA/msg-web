@@ -1,0 +1,129 @@
+{
+  "schema": "2.0",
+  "config": {
+    "update_multi": true
+  },
+  "body": {
+    "direction": "vertical",
+    "elements": [
+      {
+        "tag": "column_set",
+        "flex_mode": "stretch",
+        "horizontal_spacing": "12px",
+        "horizontal_align": "left",
+        "columns": [
+          {
+            "tag": "column",
+            "width": "weighted",
+            "elements": [
+              {
+                "tag": "markdown",
+                "content": "**报警时间：** 2023-11-15 14:30:22\n**报警类型：** Prometheus服务监控\n**故障描述：** HTTP服务QPS突降90%，响应时间>5s"
+              }
+            ],
+            "vertical_spacing": "8px",
+            "horizontal_align": "left",
+            "vertical_align": "top",
+            "weight": 2
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "elements": [
+              {
+                "tag": "markdown",
+                "content": "**@负责人**\n请处理此报警",
+                "text_align": "left",
+                "text_size": "normal"
+              }
+            ],
+            "vertical_spacing": "8px",
+            "horizontal_align": "left",
+            "vertical_align": "top",
+            "weight": 1
+          }
+        ],
+        "margin": "0px 0px 0px 0px"
+      },
+      {
+        "tag": "column_set",
+        "flex_mode": "stretch",
+        "horizontal_spacing": "8px",
+        "horizontal_align": "left",
+        "columns": [
+          {
+            "tag": "column",
+            "width": "auto",
+            "elements": [],
+            "vertical_spacing": "8px",
+            "horizontal_align": "left",
+            "vertical_align": "top"
+          },
+          {
+            "tag": "column",
+            "width": "auto",
+            "elements": [
+              {
+                "tag": "button",
+                "text": {
+                  "tag": "plain_text",
+                  "content": "查看详情"
+                },
+                "type": "default",
+                "width": "fill",
+                "behaviors": [
+                  {
+                    "type": "open_url",
+                    "default_url": "https://monitor.example.com/alerts/12345",
+                    "pc_url": "",
+                    "ios_url": "",
+                    "android_url": ""
+                  }
+                ],
+                "margin": "4px 0px 4px 0px"
+              }
+            ],
+            "vertical_spacing": "8px",
+            "horizontal_align": "left",
+            "vertical_align": "top"
+          },
+          {
+            "tag": "column",
+            "width": "auto",
+            "elements": [],
+            "vertical_spacing": "8px",
+            "horizontal_align": "left",
+            "vertical_align": "top"
+          }
+        ],
+        "margin": "0px 0px 0px 0px"
+      }
+    ]
+  },
+  "header": {
+    "title": {
+      "tag": "plain_text",
+      "content": "【P0紧急】服务异常报警"
+    },
+    "subtitle": {
+      "tag": "plain_text",
+      "content": ""
+    },
+    "text_tag_list": [
+      {
+        "tag": "text_tag",
+        "text": {
+          "tag": "plain_text",
+          "content": "P0紧急"
+        },
+        "color": "red"
+      }
+    ],
+    "template": "red",
+    "icon": {
+      "tag": "standard_icon",
+      "token": "alert-circle_outlined"
+    },
+    "padding": "12px 16px 12px 16px"
+  }
+}
