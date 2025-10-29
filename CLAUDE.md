@@ -18,18 +18,24 @@ This is a **Webhook Configuration Management System** built with Vue 3 + TypeScr
 # Install dependencies
 npm install
 
-# Development server (runs on http://localhost:3000+)
+# Development server (runs on http://localhost:3000)
 npm run dev
 
-# Build for production
+# Build for production (includes TypeScript compilation)
 npm run build
 
 # Preview production build
 npm run preview
 
-# Lint and fix code
+# Lint and fix code (ESLint with auto-fix)
 npm run lint
 ```
+
+### Build Process Notes
+- **TypeScript compilation**: `vue-tsc` runs before build for type checking
+- **Vite cache**: If experiencing blank pages, clear cache with `rm -rf node_modules/.vite`
+- **Auto-imports**: Vue, Vue Router, Pinia, and Element Plus components are auto-imported
+- **SCSS preprocessing**: Global variables available via `@/styles/variables.scss`
 
 ## Architecture Overview
 
@@ -58,16 +64,25 @@ Webhook Sources → Unified Endpoint (/webhook/{group}) → Message Parser → R
 - **Version Management**: Handles configuration migration and compatibility
 - **Import/Export**: Backup/restore functionality for all configuration data
 - **Data Validation**: Ensures data integrity across all operations
+- **Alternative Implementations**: `config-manager-v2.ts` (version management), `sqlite-config-manager.ts` (SQLite persistence)
 
 #### Message Parser (`src/utils/message-parser.ts`)
 - **Multi-Format Support**: Tencent CLS, Prometheus, Coding CI/CD, generic text
 - **Standardization**: Converts all message formats to `StandardMessage` interface
 - **Confidence Scoring**: Ranks parsing confidence for intelligent routing
+- **Extensible Architecture**: Easy to add new message format parsers
+
+#### Webhook Sender (`src/utils/webhook-sender.ts`)
+- **Multi-Platform Support**: Feishu, WeChat Work, DingTalk, Slack, Discord, Teams
+- **Platform-Specific Formatting**: Handles each platform's message format requirements
+- **Error Handling**: Comprehensive error handling and retry logic
+- **Status Tracking**: Tracks delivery status and provides feedback
 
 #### Feishu Card System
 - **Real-time Preview**: Live template preview with configurable styling
 - **Color Themes**: Red (critical), Yellow (warning), Green (success), Blue (info)
 - **Dynamic Content**: Template-based content generation with field substitution
+- **Interactive Elements**: Supports buttons, links, and rich media in cards
 
 ## Important Implementation Details
 
@@ -80,8 +95,9 @@ import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 ```
 
 ### Development Server Notes
-- **Port Conflicts**: Development server may use ports 3000-3002 due to conflicts
-- **Vite Cache**: If experiencing blank pages, clear Vite cache with `rm -rf node_modules/.vite`
+- **Default Port**: Development server runs on http://localhost:3000 (configured in vite.config.ts)
+- **Port Conflicts**: If port 3000 is occupied, Vite will automatically try 3001, 3002, etc.
+- **Auto Open**: Server opens browser automatically on start
 - **Hot Reload**: All components support hot reload during development
 
 ### Data Persistence Strategy
@@ -101,6 +117,8 @@ import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 - **Simple Versions**: Files ending with `-simple.vue` are minimal implementations for troubleshooting
 - **Component Files**: Dialog components in `/components/` directory with descriptive names
 - **Store Files**: One store per domain (groups, users, rules, templates)
+- **Path Alias**: `@` mapped to `src/` directory for cleaner imports
+- **Auto-imports**: Components and composables automatically imported via unplugin
 
 ### Routing Structure
 - **Layout-Based**: All routes wrapped in main layout component
@@ -112,8 +130,11 @@ import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 - **src/types/index.ts**: Complete TypeScript type definitions for all data models
 - **src/utils/config-manager.ts**: Core data persistence and management logic
 - **src/utils/init-demo-data.ts**: Automatic demo data initialization
+- **src/utils/message-parser.ts**: Multi-format message parsing engine
+- **src/utils/webhook-sender.ts**: Multi-platform webhook delivery system
 - **src/router/index.ts**: Vue Router configuration with nested routes
-- **vite.config.ts**: Vite build configuration with auto-imports
+- **vite.config.ts**: Vite build configuration with auto-imports and SCSS preprocessing
+- **package.json**: Dependencies include vue-echarts for monitoring dashboards, wa-sqlite for local storage option
 
 ## Development Workflow
 
@@ -123,7 +144,24 @@ When working with this codebase:
 3. **Test Data Changes**: Verify data persistence through ConfigManager operations
 4. **Validate Templates**: Use FeishuCardPreview component for template testing
 5. **Multi-Platform Testing**: Test webhook configurations across different platforms
+6. **Message Parser Testing**: Test with different message formats (Tencent CLS, Prometheus, etc.)
+7. **Store Patterns**: Follow consistent Pinia store patterns for new features
+
+## Type System Architecture
+
+The codebase uses a comprehensive TypeScript type system:
+
+### Core Type Definitions
+- **`GlobalConfig`**: Central configuration structure with version management
+- **`StandardMessage`**: Normalized message format for consistent processing
+- **`ParsedMessage`**: Message with parsing metadata and confidence scores
+- **Platform Configs**: Union types for different webhook platforms
+
+### Enum and Union Types
+- **`MessageType`**: Alert, log, notification, etc.
+- **`SeverityLevel`**: Critical, warning, info, etc.
+- **`PlatformType`**: Feishu, WeChat Work, DingTalk, etc.
 
 ## Current Status
 
-The application is in active development with all core functionality implemented. The development server runs on http://localhost:3002/ with a simplified layout component. All UI icons have been properly configured and the system supports full CRUD operations for groups, users, rules, and templates.
+The application is in active development with all core functionality implemented. The development server runs on http://localhost:3000/ with a comprehensive layout component. All UI icons have been properly configured and the system supports full CRUD operations for groups, users, rules, and templates. The message parsing engine supports multiple formats and the webhook delivery system handles multi-platform message formatting.
