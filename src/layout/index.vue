@@ -26,7 +26,7 @@
         </el-menu-item>
 
         <el-menu-item index="/rules">
-          <el-icon><Bullhorn /></el-icon>
+          <el-icon><Promotion /></el-icon>
           <template #title>规则配置</template>
         </el-menu-item>
 
@@ -108,7 +108,7 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import {
   OfficeBuilding,
   User,
-  Bullhorn,
+  Promotion,
   Document,
   Monitor,
   Setting,
@@ -116,7 +116,8 @@ import {
   Fold,
   Download,
   Upload,
-  CaretBottom
+  CaretBottom,
+  Notification
 } from '@element-plus/icons-vue'
 import ImportExportDialog from '@/components/ImportExportDialog.vue'
 

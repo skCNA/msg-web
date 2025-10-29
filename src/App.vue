@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1>Webhook配置管理系统</h1>
     <router-view />
   </div>
 </template>
@@ -11,7 +10,14 @@ console.log('App.vue 已加载')
 
 <style>
 #app {
-  padding: 20px;
+  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
 }
 </style>

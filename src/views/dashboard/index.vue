@@ -64,7 +64,7 @@
           <el-card class="status-card status-rules">
             <div class="status-content">
               <div class="status-icon">
-                <el-icon size="32"><Bullhorn /></el-icon>
+                <el-icon size="32"><Promotion /></el-icon>
               </div>
               <div class="status-info">
                 <div class="status-value">{{ systemStatus.activeRules }}</div>
@@ -314,7 +314,7 @@ import {
   SuccessFilled,
   Connection,
   Message,
-  Bullhorn,
+  Promotion,
   TrendCharts,
   Document,
   Tools,

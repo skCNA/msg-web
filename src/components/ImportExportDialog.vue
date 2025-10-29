@@ -157,6 +157,11 @@
 import { ref, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { UploadFile } from 'element-plus'
+import {
+  UploadFilled,
+  Document,
+  Close
+} from '@element-plus/icons-vue'
 import { configManager } from '@/utils/config-manager'
 import type { GlobalConfig } from '@/types'
 

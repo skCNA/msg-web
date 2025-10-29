@@ -5,7 +5,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Layout',
-    component: () => import('@/layout/index-simple.vue'),
+    component: () => import('@/layout/index.vue'),
     redirect: '/groups',
     children: [
       {
