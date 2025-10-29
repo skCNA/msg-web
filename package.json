@@ -17,7 +17,8 @@
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
     "vue-echarts": "^6.6.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "wa-sqlite": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.0",

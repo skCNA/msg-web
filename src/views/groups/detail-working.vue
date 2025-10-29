@@ -304,11 +304,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import type { Group, Rule, Webhook } from '@/types'
 import { useGroupsStore } from '@/stores/groups'
 import { useRulesStore } from '@/stores/rules'
 import { useUsersStore } from '@/stores/users'
+import { WebhookSender } from '@/utils/webhook-sender'
 // import GroupDialogSimple from '@/components/GroupDialogSimple.vue'
 // import WebhookDialog from '@/components/WebhookDialog.vue'
 
@@ -436,24 +437,81 @@ const copyWebhookUrl = () => {
 }
 
 const testWebhook = async (webhook: Webhook) => {
+  // 显示加载状态
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在测试 Webhook...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
   try {
-    // 构建测试消息
-    const testMessage = {
-      title: 'Webhook测试消息',
-      content: `这是一个来自群组"${group.value?.name}"的测试消息，用于验证Webhook配置是否正确。`,
-      timestamp: new Date().toISOString()
+    // 执行真实的 webhook 测试
+    const result = await WebhookSender.testWebhook(webhook)
+
+    if (result.success) {
+      ElMessage.success({
+        message: `✅ 测试成功！消息已发送至 ${WebhookSender.getPlatformName(webhook.platform)}`,
+        duration: 3000
+      })
+
+      // 更新 webhook 的测试状态
+      await updateWebhookTestStatus(webhook.id, 'success', result.message)
+    } else {
+      ElMessage.error({
+        message: `❌ 测试失败: ${result.message}`,
+        duration: 5000
+      })
+
+      // 更新 webhook 的测试状态
+      await updateWebhookTestStatus(webhook.id, 'failed', result.message)
     }
 
-    // 模拟发送测试消息
-    console.log('测试Webhook:', webhook, testMessage)
+    // 打印详细结果到控制台（用于调试）
+    console.log('Webhook 测试结果:', {
+      webhook: webhook.name,
+      platform: webhook.platform,
+      url: webhook.url,
+      result
+    })
 
-    // 模拟延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
+  } catch (error: any) {
+    console.error('测试 Webhook 异常:', error)
+    ElMessage.error({
+      message: `测试异常: ${error.message}`,
+      duration: 5000
+    })
 
-    ElMessage.success(`测试消息已发送至 ${getPlatformName(webhook.platform)}`)
+    // 更新 webhook 的测试状态为失败
+    await updateWebhookTestStatus(webhook.id, 'failed', error.message)
+  } finally {
+    loading.close()
+  }
+}
+
+/**
+ * 更新 webhook 的测试状态
+ */
+const updateWebhookTestStatus = async (webhookId: string, status: 'success' | 'failed', message?: string) => {
+  try {
+    if (!group.value) return
+
+    // 更新本地状态
+    const webhookIndex = group.value.webhooks.findIndex(w => w.id === webhookId)
+    if (webhookIndex !== -1) {
+      group.value.webhooks[webhookIndex].test_status = status
+      group.value.webhooks[webhookIndex].last_test_time = new Date().toISOString()
+    }
+
+    // 更新到存储
+    await groupsStore.updateGroup(group.value.id, {
+      webhooks: group.value.webhooks
+    })
+
+    // 刷新数据
+    await loadGroupDetail()
+
   } catch (error) {
-    console.error('测试Webhook失败:', error)
-    ElMessage.error('测试失败，请检查Webhook配置')
+    console.error('更新 webhook 测试状态失败:', error)
   }
 }
 

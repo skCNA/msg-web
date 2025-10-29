@@ -55,6 +55,12 @@ const routes: RouteRecordRaw[] = [
         name: 'Settings',
         component: () => import('@/views/settings.vue'),
         meta: { title: '系统设置' }
+      },
+      {
+        path: '/storage-test',
+        name: 'StorageTest',
+        component: () => import('@/views/StorageTest.vue'),
+        meta: { title: '存储测试' }
       }
     ]
   }

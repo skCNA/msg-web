@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Template, TemplateCondition } from '@/types'
-import { configManager } from '@/utils/config-manager'
+import { configManagerV2 } from '@/utils/config-manager-v2'
 
 export const useTemplatesStore = defineStore('templates', () => {
   // 状态
@@ -121,7 +121,7 @@ export const useTemplatesStore = defineStore('templates', () => {
   const loadTemplates = async () => {
     loading.value = true
     try {
-      templates.value = configManager.getTemplates()
+      templates.value = await configManagerV2.getTemplatesAsync()
     } catch (error) {
       console.error('Failed to load templates:', error)
       throw error
@@ -133,7 +133,7 @@ export const useTemplatesStore = defineStore('templates', () => {
   // 添加模板
   const addTemplate = async (templateData: Omit<Template, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      const newTemplate = configManager.addTemplate(templateData)
+      const newTemplate = await configManagerV2.addTemplateAsync(templateData)
       templates.value.push(newTemplate)
       return newTemplate
     } catch (error) {
@@ -145,7 +145,7 @@ export const useTemplatesStore = defineStore('templates', () => {
   // 更新模板
   const updateTemplate = async (id: string, updates: Partial<Template>) => {
     try {
-      const updatedTemplate = configManager.updateTemplate(id, updates)
+      const updatedTemplate = await configManagerV2.updateTemplateAsync(id, updates)
       if (updatedTemplate) {
         const index = templates.value.findIndex(t => t.id === id)
         if (index !== -1) {
@@ -162,7 +162,7 @@ export const useTemplatesStore = defineStore('templates', () => {
   // 删除模板
   const deleteTemplate = async (id: string) => {
     try {
-      const success = configManager.deleteTemplate(id)
+      const success = await configManagerV2.deleteTemplateAsync(id)
       if (success) {
         templates.value = templates.value.filter(t => t.id !== id)
       }
